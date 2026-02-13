@@ -24,6 +24,8 @@ function cookieOptions(){
 async function login(req, res, next) {
     try{
 
+        console.log('content-type:', req.headers['content-type']);
+console.log('body:', req.body);
         const data = loginSchema.parse(req.boty);
         const result = await service.login(data);
 

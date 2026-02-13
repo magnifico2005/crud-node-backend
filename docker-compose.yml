@@ -21,7 +21,7 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     container_name: crud_api
-    environment:
+    environment:    
       NODE_ENV: production
       PORT: "3000"
       DB_HOST: postgres
