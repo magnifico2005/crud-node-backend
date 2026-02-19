@@ -23,12 +23,12 @@ async function findByEmail(email) {
   return rows[0] || null;
 }
 
-async function create({ name, email }) {
+async function create({ name, email, password_hash }) {
   const { rows } = await db.query(
-    `INSERT INTO users (name, email)
-     VALUES ($1, $2)
-     RETURNING id, name, email, created_at, updated_at`,
-    [name, email]
+    `INSERT INTO users (name, email, password_hash)
+     VALUES ($1, $2, $3)
+     RETURNING id, name, email, created_at, updated_at, password_hash`, 
+    [name, email, password_hash]
   );
   return rows[0];
 }

@@ -28,7 +28,6 @@ async function get(req, res, next) {
 }
 
 async function create(req, res, next) {
-  console.log("estive aqui create")
   try {
     const data = createUserSchema.parse(req.body);
     const user = await service.createUser(data);

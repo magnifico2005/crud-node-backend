@@ -2,7 +2,8 @@ const { z } = require('zod');
 
 const createUserSchema = z.object({
   name: z.string().min(2).max(120),
-  email: z.string().email().max(180)
+  email: z.string().email().max(180),
+  password: z.string().min(6).max(9)
 });
 
 const updateUserSchema = z.object({
