@@ -21,6 +21,8 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     container_name: crud_api
+    env_file:
+      - ./backend/.env
     environment:    
       NODE_ENV: production
       PORT: "3000"

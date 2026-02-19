@@ -2,7 +2,7 @@ const db = require('../../config/db');
 
 async  function findUserByEmail(email) {
     const { rows }  = await db.query(
-        'select id, name, email, password_hash, role is_active from users where email = $1', [email]
+        'select id, name, email, password_hash, role, is_active from users where email = $1', [email]
     );
     return rows[0] || null;
 }
@@ -14,18 +14,20 @@ async function findUserById(id) {
     return rows[0] || null;
 }
 
-async function insertRefreshToken(userId, tokenHash, expiresAt) {
+async function insertRefreshToken({ userId, tokenHash, expiresAt }) {
     const { rows } = await db.query(
         `INSERT INTO refresh_tokens ( user_id, token_hash, expires_at)
         VALUES ($1, $2 , $3)
-        RETURNING id` )
+        RETURNING id`,
+        [userId, tokenHash, expiresAt]
+    )
 
         return rows[0] || null;
     
 }
 
 async function findValidRefreshToken(tokenHash) {
-    const [ rows ]  = await db.query(
+    const { rows }  = await db.query(
         `SELECT id, user_id, expires_at, revoked_at from refresh_tokens where token_hash = $1`, [tokenHash]
     );
 
@@ -39,7 +41,8 @@ async function findValidRefreshToken(tokenHash) {
 
 async function revokedRefreshToken(id) {
     await db.query(
-        'UPDATE refresh_tokens set revoked_at = now whre id = $1' [id]
+        'UPDATE refresh_tokens set revoked_at = now() where id = $1',
+        [id]
 
 
     );

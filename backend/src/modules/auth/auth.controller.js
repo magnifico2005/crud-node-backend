@@ -3,7 +3,7 @@ const {loginSchema } =  require('./auth.schema');
 const service = require('./auth.service');
 
 function cookieOptions(){
-    const secure = ( process.env.COOKIE_SEDCURE || 'false' )  === 'true';
+    const secure = ( process.env.COOKIE_SECURE || 'false' )  === 'true';
     const sameSite = process.env.COOKIE_SAMESITE || 'LAX';
 
 
@@ -17,7 +17,7 @@ function cookieOptions(){
         // maxAge alinhado aos dias do refresh
 
 
-        maxAge: Number(process.env.REFRESH_TOKEN_EXPIRIES_DAYS || 7) * 24 * 60 * 1000
+        maxAge: Number(process.env.REFRESH_TOKEN_EXPIRIES_DAYS || 7) * 24 * 60 * 60 * 1000
     };
 }
 
@@ -25,8 +25,8 @@ async function login(req, res, next) {
     try{
 
         console.log('content-type:', req.headers['content-type']);
-console.log('body:', req.body);
-        const data = loginSchema.parse(req.boty);
+        console.log('body:', req.body);
+        const data = loginSchema.parse(req.body);
         const result = await service.login(data);
 
         //refresh token vai em cookie httpOnly
@@ -48,14 +48,14 @@ console.log('body:', req.body);
 async function refresh(req, res, next ) {
     try{
 
-        const refreshToken = req.cookie.refresh_token;
+        const refreshToken = req.cookies.refresh_token;
 
-        const result = await service.refreshToken(refreshToken);
+        const result = await service.refresh(refreshToken);
 
 
         // rotaciona cookie
 
-        res.cookie('refrech_token', result.refreshToken, cookieOptions());
+        res.cookie('refresh_token', result.refreshToken, cookieOptions());
 
         res.json({
             accessToken : result.accessToken,
@@ -69,7 +69,7 @@ async function refresh(req, res, next ) {
 
 async function logout(req, res, next) {
     try{
-        const refreshToken = req.cookie.refresh.token;
+        const refreshToken = req.cookies.refresh_token;
         await service.logout(refreshToken);
 
         res.clearCookie ('refresh_token', {path: '/api/auth'});
