@@ -55,7 +55,13 @@ async function refresh(req, res, next ) {
 
         // rotaciona cookie
 
-        res.cookie('refresh_token', result.refreshToken, cookieOptions());
+        res.cookie('refresh_token', result.refreshToken, {
+        httpOnly: true,
+        secure: false,          // dev http
+        sameSite: 'none',       // obrigatório para cross-origin
+        path: '/api/auth',
+        maxAge: 7 * 24 * 60 * 60 * 1000
+        });
 
         res.json({
             accessToken : result.accessToken,

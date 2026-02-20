@@ -16,11 +16,12 @@ function signAccessToken(user){
     const secret = process.env.JWT_ACCESS_SECRET;
     if(!secret) throw new Error('Erro com a chave secreta')
 
-        const expiresIn = process.env.JWT_ACCESS_EXPIRES_IN || '15m';
+        const expiresIn = process.env.JWT_ACCESS_EXPIRES_IN || '10s';
 
         return jwt.sign(
             { sub: String(user.id), role: user.role || 'user'} ,
             secret,
+
             {expiresIn}
         );
 }

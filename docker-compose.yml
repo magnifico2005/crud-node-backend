@@ -32,6 +32,8 @@ services:
       DB_USER: app
       DB_PASSWORD: app123
       DB_SSL: "false"
+      COOKIE_SECURE: "false"
+      COOKIE_SAMESITE: "lax"
     ports:
       - "3000:3000"
     depends_on:

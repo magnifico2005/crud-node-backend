@@ -19,7 +19,7 @@ app.use(cookieParser());
 
 // Ajuste origin para o seu frontend (Quasar), ex: http://localhost:9000
 app.use(cors({
-  origin: ['http://localhost:9000', 'http://localhost:3000'],
+  origin: ['http://localhost:9000'],
   credentials: true
 }));
 
