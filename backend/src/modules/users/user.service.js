@@ -1,3 +1,4 @@
+const bcrypt = require('bcrypt');
 const repo = require('./user.repository');
 
 function httpError(statusCode, code, message) {
@@ -20,7 +21,13 @@ async function getUser(id) {
 async function createUser(data) {
   const exists = await repo.findByEmail(data.email);
   if (exists) throw httpError(409, 'EMAIL_ALREADY_EXISTS', 'Email already exists');
-  return repo.create(data);
+  const password_hash = await bcrypt.hash(data.password, 10);
+  const created = await repo.create({
+    name: data.name,
+    email: data.email,
+    password_hash
+  });
+  return created;
 }
 
 async function updateUser(id, data) {
@@ -32,7 +39,17 @@ async function updateUser(id, data) {
     if (exists) throw httpError(409, 'EMAIL_ALREADY_EXISTS', 'Email already exists');
   }
 
-  const updated = await repo.update(id, data);
+  const payload = { ...data };
+  if (payload.password) {
+    payload.password_hash = await bcrypt.hash(payload.password, 10);
+    delete payload.password;
+  }
+  if (payload.roles && !payload.role) {
+    payload.role = payload.roles;
+    delete payload.roles;
+  }
+
+  const updated = await repo.update(id, payload);
   return updated;
 }
 

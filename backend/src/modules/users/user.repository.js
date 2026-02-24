@@ -27,7 +27,7 @@ async function create({ name, email, password_hash }) {
   const { rows } = await db.query(
     `INSERT INTO users (name, email, password_hash)
      VALUES ($1, $2, $3)
-     RETURNING id, name, email, created_at, updated_at, password_hash`, 
+     RETURNING id, name, email, created_at, updated_at`,
     [name, email, password_hash]
   );
   return rows[0];
@@ -51,7 +51,7 @@ async function update(id, data) {
     `UPDATE users
      SET ${fields.join(', ')}
      WHERE id = $${idx}
-     RETURNING id, name, email, created_at, updated_at`,
+     RETURNING id, name, email, role, created_at, updated_at`,
     values
   );
 
